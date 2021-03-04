@@ -23,10 +23,10 @@ public class SalesTeamMember {
 
 
     public Boolean containsState(String state) {
-        return ( !String.isEmpty(state) && this.territory.States__c.contains(state) );
+        return ( !String.isEmpty(state) && this.territory.States__c != null && this.territory.States__c.contains(state) );
     }
 
     public Boolean containsPostalCode(String postalCode) {
-        return ( !String.isEmpty(postalCode) && this.territory.PostalCodes__c.contains(postalCode) );
+        return ( !String.isEmpty(postalCode) && this.territory.PostalCodes__c != null && this.territory.PostalCodes__c.contains(postalCode) );
     }
 }

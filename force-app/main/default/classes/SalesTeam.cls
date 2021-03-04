@@ -7,23 +7,21 @@ public class SalesTeam {
 
         this.memberNameMap = new Map<String, Integer>();
 
+        User[] queriedMembers;
 
-        // Get Sales Team User Records
-        User[] queriedMembers = [
+        // Get STE Team User Records
+        queriedMembers = [
             SELECT Id, FirstName, LastName, Name
             FROM User
-            WHERE ProfileId='00e1I000000qg9W'
+            WHERE ProfileId='00e1I000000qg9WQAQ'
             AND IsActive=true
         ];
 
-        Integer index = 0;
         for(User queriedMember : queriedMembers) {
             if(queriedMember.Name != 'Brad Outersky') {
                 this.members.add(new SalesTeamMember(queriedMember));
 
-                this.memberNameMap.put(queriedMember.Name, index);
-
-                index += 1;
+                this.memberNameMap.put(queriedMember.Name, this.members.size() - 1);
             }
         }
 
@@ -32,7 +30,37 @@ public class SalesTeam {
         queriedMembers = [
             SELECT Id, FirstName, LastName, Name
             FROM User
-            WHERE Name='Dan DeAces'
+            WHERE FirstName='Dan'
+            AND LastName='DeAces'
+            AND IsActive=true
+        ];
+
+        this.members.add(new SalesTeamMember(queriedMembers[0]));
+
+        this.memberNameMap.put(queriedMembers[0].Name, this.members.size() - 1);
+
+
+        // Get STB Team User Records
+        queriedMembers = [
+            SELECT Id, FirstName, LastName, Name
+            FROM User
+            WHERE ProfileId='00e1I000001vfKAQAY'
+            AND IsActive=true
+        ];
+
+        for(User queriedMember : queriedMembers) {
+            this.members.add(new SalesTeamMember(queriedMember));
+
+            this.memberNameMap.put(queriedMember.Name, this.members.size() - 1);
+        }
+
+
+        // Get Sondra's User Record
+        queriedMembers = [
+            SELECT Id, FirstName, LastName, Name
+            FROM User
+            WHERE FirstName='Sondra'
+            AND LastName='Kirby'
             AND IsActive=true
         ];
 
