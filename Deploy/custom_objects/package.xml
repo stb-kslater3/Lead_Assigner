@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>SalesTeamTerritory__c</members>
+        <name>CustomObject</name>
+    </types>
+
+    <types>
+        <members>SalesTeamTerritory__c-SalesTeamTerritory Layout</members>
+        <name>Layout</layout>
+    </types>
+
+    <version>50.0</version>
+</Package>

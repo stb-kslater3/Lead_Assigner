@@ -1,0 +1,78 @@
+<project name="LeadAssignment_AntBuild" default="doNothing" basedir="." xmlns:sf="antlib:com.salesforce">
+
+	<property file="build.properties"/>
+    <property environment="env"/>
+	
+	<!-- Setting default value for username, password and session id properties to empty string 
+         so unset values are treated as empty. Without this, ant expressions such as ${sf.username}
+         will be treated literally.
+    -->
+    <condition property="sf.production.username" value=""> <not> <isset property="sf.production.username"/> </not> </condition>
+    <condition property="sf.production.password" value=""> <not> <isset property="sf.production.password"/> </not> </condition>
+
+	<condition property="sf.rspilot.username" value=""> <not> <isset property="sf.rspilot.username"/> </not> </condition>
+    <condition property="sf.rspilot.password" value=""> <not> <isset property="sf.rspilot.password"/> </not> </condition>
+
+
+	<target name="doNothing">
+	</target>
+
+
+	<target name="list_metadata_CustomObject">
+        <sf:listMetadata username="${sf.rspilot.username}"
+                         password="${sf.rspilot.password}"
+                         serverurl="${sf.rspilot.serverurl}"
+                         metadataType="CustomObject"
+                         resultFilePath="MetaDataTypes/CustomObjects.txt" />
+    </target>
+
+	<target name="list_metadata_Layout">
+        <sf:listMetadata username="${sf.rspilot.username}"
+                         password="${sf.rspilot.password}"
+                         serverurl="${sf.rspilot.serverurl}"
+                         metadataType="Layout"
+                         resultFilePath="MetaDataTypes/Layouts.txt" />
+    </target>
+
+
+	<target name="deploy_all_of_it">
+		<sf:deploy
+			username="${sf.production.username}"
+			password="${sf.production.password}"
+			serverurl="${sf.production.serverurl}"
+			deployroot="all_of_it_deployed"
+			testLevel="RunSpecifiedTests"
+			rollbackOnError="true">
+
+            
+            <runTest>Lead_Assignment_Manager_TEST</runTest>
+
+			<runTest>Lead_Assigner_TEST</runTest>
+			
+		</sf:deploy>
+	</target>
+
+
+	<target name="deploy_custom_objects">
+		<sf:deploy
+			username="${sf.production.username}"
+			password="${sf.production.password}"
+			serverurl="${sf.production.serverurl}"
+			deployroot="custom_objects"
+		>
+
+	</sf:deploy>
+	</target>
+	
+	
+	<target name="retrieve_all_of_it">
+		<sf:retrieve
+			username="${sf.rspilot.username}"
+			password="${sf.rspilot.password}"
+			serverurl="${sf.rspilot.serverurl}"
+            retrieveTarget="all_of_it_retrieved"
+			unpackaged="all_of_it_retrieved/package.xml"
+        />
+	</target>
+
+</project>
