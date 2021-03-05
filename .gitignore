@@ -351,4 +351,4 @@ MigrationBackup/
 
 
 # My own addition to ignore the folder that holds all the Ant Migration Tool Data etc.
-Deployment/
+Deploy/
