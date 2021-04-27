@@ -4,14 +4,14 @@ private class Lead_Assignment_Manager_TEST {
     private static Integer check_limit;
 
     static {
-        leads_fieldString = 'Name, FirstName, LastName, Company, OwnerId, Lead_Type__c, LeadSource, PostalCode, State, RoundRobin_Number__c';
+        leads_fieldString = 'Name, FirstName, LastName, Company, Industry__c, OwnerId, Lead_Type__c, LeadSource, Address, PostalCode, State, Country, RoundRobin_Number__c';
 
-        check_limit = 10;
+        check_limit = 1;
     }
 
 
     // -----------------------------------------------------------------------------------
-    // ---------------------------- stb_assign_type Tests ------------------------------------
+    // ---------------------------- stb_assign_type Tests --------------------------------
     // -----------------------------------------------------------------------------------
     @isTest(SeeAllData=true)
     static void testSTBAssignType_BaseCase() {
@@ -116,78 +116,6 @@ private class Lead_Assignment_Manager_TEST {
         User newOwner;
 
 
-        // Make sure if State is WA or ID or if Postal Code is 59219 or 59222 then it goes to Dan
-        usersQueried = [
-            SELECT Id
-            FROM User
-            WHERE Name='Dan DeAces'
-        ];
-
-        userUnderTest = usersQueried[0];
-
-        queryString = 
-            'SELECT ' + leads_fieldString +
-            ' FROM Lead ' +
-            ' WHERE State=\'WA\'' +
-            ' LIMIT ' + check_limit
-        ;
-
-        leadData = Database.Query(queryString);
-
-        for(Integer i = 0; i < Math.min(check_limit, leadData.size()); i++) {
-            newOwner = lam.ste_assign_territory(leadData[i]);
-
-            System.assertEquals(newOwner.Id, userUnderTest.Id); // Dan DeAces
-        }
-
-
-        queryString = 
-            'SELECT ' + leads_fieldString +
-            ' FROM Lead ' +
-            ' WHERE State=\'CA\'' +
-            ' LIMIT ' + check_limit
-        ;
-
-        leadData = Database.Query(queryString);
-
-        for(Integer i = 0; i < Math.min(check_limit, leadData.size()); i++) {
-            newOwner = lam.ste_assign_territory(leadData[i]);
-
-            System.assertEquals(newOwner.Id, userUnderTest.Id); // Dan DeAces
-        }
-
-
-        queryString = 
-            'SELECT ' + leads_fieldString +
-            ' FROM Lead ' +
-            ' WHERE PostalCode=\'59219\'' +
-            ' LIMIT ' + check_limit
-        ;
-
-        leadData = Database.Query(queryString);
-
-        for(Integer i = 0; i < Math.min(check_limit, leadData.size()); i++) {
-            newOwner = lam.ste_assign_territory(leadData[i]);
-
-            System.assertEquals(newOwner.Id, userUnderTest.Id); // Dan DeAces
-        }
-
-        queryString = 
-            'SELECT ' + leads_fieldString +
-            ' FROM Lead ' +
-            ' WHERE PostalCode=\'59258\'' +
-            ' LIMIT ' + check_limit
-        ;
-
-        leadData = Database.Query(queryString);
-
-        for(Integer i = 0; i < Math.min(check_limit, leadData.size()); i++) {
-            newOwner = lam.ste_assign_territory(leadData[i]);
-
-            System.assertEquals(newOwner.Id, userUnderTest.Id); // Dan DeAces
-        }
-
-
         // Make sure if State is WY then it goes to Brian
         usersQueried = [
             SELECT Id
@@ -238,7 +166,7 @@ private class Lead_Assignment_Manager_TEST {
         }
 
 
-        // Make sure if Postal Code is 78772 or 77703 then it goes to Kenneth
+        // Make sure if Postal Code is 78772 then it goes to Kenneth
         usersQueried = [
             SELECT Id
             FROM User
@@ -263,27 +191,11 @@ private class Lead_Assignment_Manager_TEST {
         }
 
 
-        queryString = 
-            'SELECT ' + leads_fieldString +
-            ' FROM Lead ' +
-            ' WHERE PostalCode=\'77703\'' +
-            ' LIMIT ' + check_limit
-        ;
-
-        leadData = Database.Query(queryString);
-
-        for(Integer i = 0; i < Math.min(check_limit, leadData.size()); i++) {
-            newOwner = lam.ste_assign_territory(leadData[i]);
-
-            System.assertEquals(newOwner.Id, userUnderTest.Id); // Kenneth Johnson
-        }
-
-
-        // Make sure if State or PostalCode are Something Else, then it goes to Dan
+        // Make sure if lead type is null it goes to sondra
         usersQueried = [
             SELECT Id
             FROM User
-            WHERE Name='Dan DeAces'
+            WHERE Name='Sondra Kirby'
         ];
 
         userUnderTest = usersQueried[0];
@@ -300,30 +212,14 @@ private class Lead_Assignment_Manager_TEST {
         for(Integer i = 0; i < Math.min(check_limit, leadData.size()); i++) {
             newOwner = lam.ste_assign_territory(leadData[i]);
 
-            System.assertEquals(newOwner.Id, userUnderTest.Id); // Dan DeAces
-        }
-
-
-        queryString = 
-            'SELECT ' + leads_fieldString +
-            ' FROM Lead ' +
-            ' WHERE PostalCode=\'64463\'' +
-            ' LIMIT ' + check_limit
-        ;
-
-        leadData = Database.Query(queryString);
-
-        for(Integer i = 0; i < Math.min(check_limit, leadData.size()); i++) {
-            newOwner = lam.ste_assign_territory(leadData[i]);
-
-            System.assertEquals(newOwner.Id, userUnderTest.Id); // Dan DeAces
+            System.assertEquals(newOwner.Id, userUnderTest.Id); // Sondra
         }
     }
     
 
 
     // -----------------------------------------------------------------------------------
-    // ---------------------------- assign_owner Tests ---------------------------------------
+    // ---------------------------- assign_owner Tests -----------------------------------
     // -----------------------------------------------------------------------------------
     @isTest(SeeAllData=true)
     static void testAssignOwner_BaseCase() {
@@ -370,32 +266,7 @@ private class Lead_Assignment_Manager_TEST {
         nFuemmeler = usersQueried[0];
 
 
-        // Make sure it is caught by STB if it is type STB
-        queryString = 
-            'SELECT ' + leads_fieldString +
-            ' FROM Lead ' +
-            ' WHERE Lead_Type__c=\'STB\'' +
-            ' LIMIT ' + check_limit
-        ;
-
-        leadData = Database.Query(queryString);
-
-        for(Integer i = 0; i < Math.min(check_limit, leadData.size()); i++) {
-            lam.assign_owner(leadData[i]);
-
-            Integer roundRobin = Integer.valueOf(leadData[i].RoundRobin_Number__c);
-            if( Math.mod(roundRobin, 3) == 0 ) {
-                System.assertEquals(leadData[i].OwnerId, mRobertson.Id);
-            }else if( Math.mod(roundRobin, 3) == 1 ) {
-                System.assertEquals(leadData[i].OwnerId, tWilson.Id);
-            }else {
-                System.assertEquals(leadData[i].OwnerId, nFuemmeler.Id);
-            }
-        }
-
-
-
-        // Make sure it is caught by STE if not STB
+        // . . .
         usersQueried = [
             SELECT Id
             FROM User

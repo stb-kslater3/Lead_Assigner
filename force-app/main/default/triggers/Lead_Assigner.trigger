@@ -3,7 +3,7 @@ trigger Lead_Assigner on Lead (before insert, before update) {
 
     Boolean runAssigner;
 
-    for(Integer i = 0; i < Trigger.size; i++) {
+    for(Integer i = 0; i < Trigger.new.size(); i++) {
         runAssigner = false;
 
         // Every time a new one is created go ahead and run it, and then they can update it if needed

@@ -18,14 +18,18 @@
 	</target>
 
 
+	
+	<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+	<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Meta Data !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+	<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+
 	<target name="list_metadata_CustomObject">
         <sf:listMetadata username="${sf.rspilot.username}"
                          password="${sf.rspilot.password}"
                          serverurl="${sf.rspilot.serverurl}"
                          metadataType="CustomObject"
-                         resultFilePath="MetaDataTypes/CustomObjects.txt" />
+                         resultFilePath="MetaDataTypes/CustomObject.txt" />
     </target>
-
 	<target name="list_metadata_Layout">
         <sf:listMetadata username="${sf.rspilot.username}"
                          password="${sf.rspilot.password}"
@@ -33,25 +37,30 @@
                          metadataType="Layout"
                          resultFilePath="MetaDataTypes/Layouts.txt" />
     </target>
+	<target name="list_metadata_CustomTab">
+        <sf:listMetadata username="${sf.rspilot.username}"
+                         password="${sf.rspilot.password}"
+                         serverurl="${sf.rspilot.serverurl}"
+                         metadataType="CustomTab"
+                         resultFilePath="MetaDataTypes/CustomTabs.txt" />
+    </target>
 
 
-	<target name="deploy_all_of_it">
-		<sf:deploy
-			username="${sf.production.username}"
-			password="${sf.production.password}"
-			serverurl="${sf.production.serverurl}"
-			deployroot="all_of_it_deployed"
-			testLevel="RunSpecifiedTests"
-			rollbackOnError="true">
 
-            
-            <runTest>Lead_Assignment_Manager_TEST</runTest>
+	
+	<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+	<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Custom Objects !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+	<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
 
-			<runTest>Lead_Assigner_TEST</runTest>
-			
-		</sf:deploy>
+	<target name="retrieve_custom_objects">
+		<sf:retrieve
+			username="${sf.rspilot.username}"
+			password="${sf.rspilot.password}"
+			serverurl="${sf.rspilot.serverurl}"
+            retrieveTarget="custom_objects"
+			unpackaged="custom_objects/package.xml"
+        />
 	</target>
-
 
 	<target name="deploy_custom_objects">
 		<sf:deploy
@@ -61,18 +70,41 @@
 			deployroot="custom_objects"
 		>
 
-	</sf:deploy>
+		</sf:deploy>
 	</target>
 	
 	
-	<target name="retrieve_all_of_it">
+
+	<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+	<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! Apex !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+	<!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+
+	<target name="retrieve_apex">
 		<sf:retrieve
 			username="${sf.rspilot.username}"
 			password="${sf.rspilot.password}"
 			serverurl="${sf.rspilot.serverurl}"
-            retrieveTarget="all_of_it_retrieved"
-			unpackaged="all_of_it_retrieved/package.xml"
+            retrieveTarget="apex"
+			unpackaged="apex/package.xml"
         />
+	</target>
+
+	<target name="deploy_apex">
+		<sf:deploy
+			username="${sf.production.username}"
+			password="${sf.production.password}"
+			serverurl="${sf.production.serverurl}"
+			deployroot="apex"
+			testLevel="RunSpecifiedTests"
+			rollbackOnError="true"
+		>
+
+		
+		<runTest>Lead_Assignment_Manager_TEST</runTest>
+
+		<runTest>Lead_Assigner_TEST</runTest>
+
+		</sf:deploy>
 	</target>
 
 </project>

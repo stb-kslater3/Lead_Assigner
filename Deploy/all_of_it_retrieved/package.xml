@@ -13,6 +13,12 @@
         <name>ApexTrigger</name>
     </types>
     <types>
+        <members>SalesTeamTerritory__c.PostalCodes__c</members>
+        <members>SalesTeamTerritory__c.States__c</members>
+        <members>SalesTeamTerritory__c.User__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
         <members>SalesTeamTerritory__c</members>
         <name>CustomObject</name>
     </types>
